@@ -3,12 +3,11 @@ import json
 PROJECT = Path(__file__).resolve().parent.parent.parent
 with open(str(PROJECT / "data/processed-data/mapping.json"), 'r', encoding="utf-8") as f:
     mapping = json.load(f)
-print(mapping)
-
+# mapping: {docId: int -> doc}
 
 def final(docIdSet):
-    docs = set()
+    docs = []
     for docsId in docIdSet:
         for docId in docsId:
-            docs.add(mapping(docId))
+            docs.append(mapping[str(docId)])
     return docs

@@ -1,5 +1,8 @@
 from search import search
-ipt = input("请输入关键词：").split()
-docs = search(ipt)
-for doc in docs:
-    print(doc)
+while(True):
+    ipt = input("请输入关键词：").split()
+    if(not ipt):
+        break
+    docs = search(ipt)
+    for doc in docs:
+        print(doc)

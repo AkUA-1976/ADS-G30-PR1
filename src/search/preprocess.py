@@ -6,7 +6,8 @@ from pathlib import Path
 import json
 PROJECT = Path(__file__).resolve().parent.parent.parent
 with open(str(PROJECT / "data/processed-data/stopwords.json"), 'r', encoding="utf-8") as f:
-    stopwords = json.load(f)
+    stopwords = set(json.load(f))
+# stopword: {word1, word2...}
 
 def deleteStopword(stopwords, ipt):
     deleted = set()
