@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+
+# 语料原始数据：约 12 MB / 761 篇 html，可由 GitHub 镜像 clone 重建，不入库
+data/raw-data/
+
+# 预处理中间产物：约 25 MB，可由 src/build/preprocess 的脚本随时重建，不入库
+data/processed-data/inner-docs.json
