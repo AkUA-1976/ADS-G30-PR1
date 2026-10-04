@@ -8,7 +8,7 @@ stemmer = Stemmer.Stemmer("english")
 from pathlib import Path
 import json
 PROJECT = Path(__file__).resolve().parent.parent.parent
-with open(str(PROJECT / "data/processed-data/stopwords.json"), 'r', encoding="utf-8") as f:
+with open(str(PROJECT / "data/processed-data/stopword.json"), 'r', encoding="utf-8") as f:
     stopwords = set(json.load(f))
 # stopword: {word1, word2...}
 
@@ -22,6 +22,6 @@ def deleteStopword(stopwords, ipt):
 
 
 def process(ipt):
-    ipt = stemmer(ipt)
+    ipt = stemmer.stemWords(ipt)
     ipt = deleteStopword(stopwords, ipt)
     return ipt
