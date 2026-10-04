@@ -1,0 +1,12 @@
+{
+  "love": {
+    "total-frequency": 1234,
+    "document-frequency": 210,
+    "docId": [0, 3, 7, 12, 18]
+  },
+  "macbeth": {
+    "total-frequency": 45,
+    "document-frequency": 18,
+    "docId": [200, 201, 205]
+  }
+}
