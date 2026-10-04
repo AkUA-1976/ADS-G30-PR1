@@ -43,7 +43,7 @@ for i in range(total_doc):
     # 词干 -> [频率, 出现位置...]（位置是 0 起的词序）
     for j in range(len(total_words)):
         if total_words[j] not in dic:
-            dic[total_words[j]]=[1,j]
+            dic[total_words[j]]=[1,j]# 这个数组的第一个是该词在这个文件的词频，之后是在这个文件中出现位置的列表
         else:
             dic[total_words[j]][0]=dic[total_words[j]][0]+1
             dic[total_words[j]].append(j)
