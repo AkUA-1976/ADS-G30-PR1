@@ -1,6 +1,14 @@
+# 交叉验证 search 模块是否和 ground truth 一致。
+# 思路：用线性扫描(reference)算出标准答案(docId 集合)，
+#       再用 search 模块跑一遍(返回 docname 列表)，
+#       把 docname 反查回 docId 后对照。
+# 用法：cd test 然后 python verify_teammate_search.py
+
 import sys
 from pathlib import Path
 
+# 让脚本能 import 到 test 目录下的 common/reference，
+# 以及 src/search 目录下的 search 模块
 root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(root / "test"))
 sys.path.insert(0, str(root / "src" / "search"))
@@ -20,10 +28,12 @@ def main():
     stop = get_stopwords()
     mapping = load_mapping()
 
+    # docname -> docId 的反查表
     name_to_id = {}
     for doc_id, docname in mapping.items():
         name_to_id[docname] = int(doc_id)
 
+    # (查询词列表, threshold, 说明)
     cases = [
         (["kill"], 1.0, "单高频词 kill"),
         (["feed"], 1.0, "单高频词 feed"),
@@ -45,11 +55,13 @@ def main():
 
     failed = 0
     print("对照结果：")
-    print("%-28s %6s %6s %6s" % ("用例", "标准", "队友", "结果"))
+    print("%-28s %6s %6s %6s" % ("用例", "标准", "search", "结果"))
     for words, threshold, label in cases:
+        # 标准答案：预处理后线性扫描
         q = process_query(words)
         expected = search_linear(q, docs, threshold)
 
+        # search 模块答案：返回 docname 列表，反查成 docId 集合
         got_names = teammate_search(words, {"threshold": threshold})
         got = set()
         for name in got_names:
@@ -64,9 +76,9 @@ def main():
 
     print()
     if failed == 0:
-        print("全部 %d 个用例通过：队友 search 和 ground truth 完全一致。" % len(cases))
+        print("全部 %d 个用例通过：search 模块和 ground truth 完全一致。" % len(cases))
     else:
-        print("有 %d 个用例没通过，需要检查队友 search 的实现。" % failed)
+        print("有 %d 个用例没通过，需要检查 search 模块的实现。" % failed)
 
 
 if __name__ == "__main__":
