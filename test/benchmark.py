@@ -17,7 +17,6 @@ def p95(nums):
 
 
 def time_avg(fn, times=100):
-    # 把 fn 跑 times 次，返回(平均时间, p95)
     ts = []
     for i in range(times):
         t0 = time.perf_counter()
@@ -31,7 +30,6 @@ def main():
     docs = get_inner_docs()
     stop = get_stopwords()
 
-    # 1. 构建倒排索引要花多少时间、多少内存
     print("\n=== 1. 构建倒排索引 ===")
     tracemalloc.start()
     t0 = time.perf_counter()
@@ -45,12 +43,10 @@ def main():
 
     pool = make_pool(index)
     queries = make_queries(pool)
-    # 先把所有查询都处理成词干，后面直接拿来用
     all_q = []
     for band, size, words in queries:
         all_q.append((band, size, process_query(words)))
 
-    # 2. 查询延迟，按(频段, 词数)分组求平均
     print("\n=== 2. 查询延迟(倒排索引) ===")
     print("%-6s %-6s %10s" % ("频段", "词数", "平均(ms)"))
     for band in ["high", "mid", "low"]:
@@ -62,7 +58,6 @@ def main():
                     ms.append(m)
             print("%-6s %-6d %10.3f" % (band, size, average(ms) * 1000))
 
-    # 3. 线性扫描 vs 倒排索引，算加速比
     print("\n=== 3. 线性扫描 vs 倒排索引 ===")
     print("%-6s %-6s %10s %10s %8s" % ("频段", "词数", "线性(ms)", "倒排(ms)", "加速比"))
     for band in ["high", "mid", "low"]:

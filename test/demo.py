@@ -1,12 +1,7 @@
-# 演示脚本：一步步展示倒排索引是怎么构建、怎么查询的。
-# 用 3 篇假文档，把每一步的中间结果都打印出来。
-# 用法：cd test 然后 python demo.py
-
 from candidate import make_index, search_index
 
 
 def main():
-    # 3 篇假文档：[总词数, {词干: [频率, 位置...]}]
     docs = {
         "0": [3, {"king": [1, 0], "dead": [1, 1], "live": [1, 2]}],
         "1": [3, {"king": [2, 0, 1], "live": [1, 2]}],
@@ -20,7 +15,7 @@ def main():
         words = docs[doc_id][1]
         print("\n处理文档 " + doc_id + "，它包含的词：" + str(list(words.keys())))
         for w, entry in words.items():
-            freq = entry[0]  # entry 第一个是频率，后面是位置
+            freq = entry[0]
             if w not in index:
                 index[w] = {"total-frequency": 0, "document-frequency": 0, "docId": []}
                 print("  词 '" + w + "' 第一次出现，先在索引里建个空条目")
