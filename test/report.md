@@ -191,9 +191,9 @@ build-index 的对账数字全部匹配：
 
 ### 关于 PyStemmer 的正确用法（附）
 
-组内曾流传「`stemmer(word)` 直接调用」的写法，但本项目使用的 PyStemmer 版本中，
-`Stemmer.Stemmer("english")` 返回的对象**没有实现 `__call__`**，直接调用会报
-`TypeError: 'Stemmer.Stemmer' object is not callable`。正确用法为：
+本项目使用的 PyStemmer 版本中，`Stemmer.Stemmer("english")` 返回的对象没有实现
+`__call__`，不能直接 `stemmer(word)` 调用（会报
+`TypeError: 'Stemmer.Stemmer' object is not callable`）。统一采用：
 
 - `stemmer.stemWord(word)` —— 对单个字符串取词干；
 - `stemmer.stemWords(words)` —— 对字符串列表逐个取词干。
@@ -232,7 +232,11 @@ build-index 的对账数字全部匹配：
 ```bash
 # 0. 数据就位（inner-docs.json 约 25 MB 不入 git，可重建）
 #    mapping.json + shakespeare/ -> data/raw-data/ -> inner-docs.json
-pip install pystemmer
+
+# 0.5 建虚拟环境（防止环境污染）
+python -m venv .venv
+.venv\Scripts\activate    # 建议在 CMD 下执行，PowerShell 有权限报错
+pip install PyStemmer
 
 # 1. 正确性测试（参考实现 vs 倒排索引）
 cd test
