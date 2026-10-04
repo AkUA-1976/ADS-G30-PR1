@@ -44,7 +44,8 @@ python benchmark.py          # 性能：构建耗时 / 查询延迟 / 加速比 
 | `test_correctness.py` | 正确性测试入口 |
 | `benchmark.py` | 性能测试入口（输出按 (频段, 词数) 聚合） |
 | `verify_teammate_search.py` | 交叉验证查询模块的 search 与 ground truth |
-| `report.md` | 正式实验报告 |
+| `report.md` | 正式实验报告（中文） |
+| `report-en.md` | 正式实验报告（英文版） |
 | `toy_example.py` | 手工小例子：3 篇假文档，手算答案 vs 程序对照 |
 | `demo.py` | 演示脚本：逐步打印倒排索引构建/查询过程 |
 

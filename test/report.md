@@ -85,13 +85,14 @@ inner-docs 里 `length` = 该文档 token 总数 = 该文档所有频率之和�
 ```
 for each 文档 D in raw-data:
     text = 去掉 HTML 标签后的 D 文本
-    tokens = 分词(text)          // 取连续字母段；连字符/撇号仅当后面紧跟字母时保留
+    tokens = 分词(text)          // 取连续字母段；连字符/撇号仅当后面紧跟字母时保留（如 i'll、twenty-one 不拆，proved--that 拆成两词）
     for t in tokens: t = lowercase(t)
     stems = stemmer.stemWords(tokens)   // Porter2 词干化，一次批量处理
     freq_map = {}
     for j, s in enumerate(stems):
         if s not in freq_map: freq_map[s] = [1, j]
         else: freq_map[s][0] += 1; freq_map[s].append(j)
+    // 整篇文档扫描完后，再一次性写入 inner_docs
     inner_docs[D.id] = [len(stems), freq_map]
 
 // 停用词：另扫一遍 inner_docs，统计每个词干的 df 和总频率，套用上面的规则
@@ -108,11 +109,11 @@ for each doc_id, (length, freq_map) in inner_docs:
         if stem in stopwords: continue
         freq = info[0]
         if stem not in index:
-            index[stem] = {total-frequency: freq, document-frequency: 1, docId: [doc_id]}
+            index[stem] = {"total-frequency": freq, "document-frequency": 1, "docId": [doc_id]}
         else:
-            index[stem].total-frequency += freq
-            index[stem].document-frequency += 1
-            index[stem].docId.append(doc_id)
+            index[stem]["total-frequency"] += freq
+            index[stem]["document-frequency"] += 1
+            index[stem]["docId"].append(doc_id)
 ```
 
 按文档号升序扫描，因此每个词的 docId 列表天然升序，无需再排序。
@@ -133,7 +134,7 @@ need = ceil(n * threshold)     // 至少命中几个词
 hit = {}
 for each w in q:
     if w not in index: continue
-    for each doc_id in index[w].docId:
+    for each doc_id in index[w]["docId"]:
         hit[doc_id] += 1
 result = { doc_id : hit[doc_id] >= need }
 把 result 里的 doc_id 经 mapping.json 转回文档路径返回
@@ -176,12 +177,15 @@ PyStemmer 3.1.0（Porter2）、Windows 11。
 |---|---|---|---|---|
 | kill, king | 2 | 0.5 | 1 | 467 |
 | kill, king | 2 | 1.0 | 2 | 101 |
-| feed, young, king | 3 | 0.34 | 1 | 192 |
-| feed, young, king | 3 | 0.67 | 2 | 26 |
+| feed, young, king | 3 | 0.34 | 2 | 192 |
+| feed, young, king | 3 | 0.67 | 3 | 26 |
 | feed, young, king | 3 | 1.0 | 3 | 26 |
 
 可见 threshold 越高，要求命中的词越多，结果越少（更严格）；threshold 越低，允许漏掉部分词，
 结果越多（更宽松）。这正是 threshold 作为"匹配门槛"的预期行为。
+
+注：feed/young/king 在 0.67 与 1.0 两行结果相同（都是 26），是因为 need = ceil(3×threshold) 在这两处都
+等于 3（ceil(2.01)=3、ceil(3.0)=3），两者都要求三个词全部命中，并非巧合。
 
 ## 3.3 性能测试数据
 
