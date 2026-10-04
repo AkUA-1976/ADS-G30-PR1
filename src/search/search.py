@@ -7,9 +7,7 @@ PROJECT = Path(__file__).resolve().parent.parent.parent
 with open(str(PROJECT / "data/processed-data/inverted-index.json"), 'r', encoding="utf-8") as f:
     index = json.load(f)
 # index: {stemword: string -> {`totalFrequency`: int, `documentFrequency`: int, `docId`: int[]}}
-with open(str(PROJECT / "data/processed-data/inner-docs.json"), 'r', encoding="utf-8") as f:
-    docs = json.load(f)
-# 我不确定要不要处理短语，不过对应的预处理是已经做好了
+
 
 def search(ipt, config={"threshold": 1.0}):
     ipt = process(ipt)# 处理词根,删去停用词
