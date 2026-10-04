@@ -45,3 +45,9 @@
 - 文档数 761（mapping.json 键 `"0"`..`"760"`，连续无缺号）
 - 总 token 938,770 ｜ 不同词干 18,536 ｜ (文档,词干) 对 319,686
 - 抽查 length：macbeth.1.1=115 ｜ cleopatra.3.10=383 ｜ hamlet.3.1=1,641 ｜ Poetry/sonnets=1,490
+
+## 如何正确的调用CLI
+使用前，先执行pip install -r requirements.txt下载扩展包
+
+要在项目的根目录运行
+- python -m src.cli.cli

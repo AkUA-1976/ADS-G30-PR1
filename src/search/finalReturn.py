@@ -9,5 +9,5 @@ def final(docIdSet):
     docs = []
     for docsId in docIdSet:
         for docId in docsId:
-            docs.append(mapping[str(docId)])
+            docs.append([docId, mapping[str(docId)]])
     return docs

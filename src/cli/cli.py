@@ -9,5 +9,5 @@ while(True):
         break
     docs = search(ipt, {"threshold": threshold})
     for doc in docs:
-        print(doc)
+        print(doc[0], ": ", doc[1])
     print("----------------------------")

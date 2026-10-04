@@ -32,6 +32,8 @@ def normalize(text):
             word+=text[p].lower()   # 扫描时顺便转小写（PyStemmer 对含大写的词几乎不处理）
             p=p+1
         ipt.append(word)
+    if(word != ""):
+        ipt.append(word)
     return ipt
 
 def process(ipt):
