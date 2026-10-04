@@ -8,7 +8,7 @@ Team Division:
 
 | Member | Module |
 |---|---|
-| Sun Junjie | Data preprocessing (preprocess) + stop-word processing (stopword-processer) |
+| Wang Zhanyou | Data preprocessing (preprocess) + stop-word processing (stopword-processer) |
 | Chen Siyu | Inverted index construction (build-index) |
 | Hu Hongwei | Query (search) and command-line interface (cli) |
 | Liu Hengyi | Benchmark and lab report |

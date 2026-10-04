@@ -8,7 +8,7 @@
 
 | 成员 | 负责模块 |
 |---|---|
-| 孙俊杰 | 数据预处理（preprocess）+ 停用词处理（stopword-processer） |
+| 王辗悠 | 数据预处理（preprocess）+ 停用词处理（stopword-processer） |
 | 陈思羽 | 倒排索引构建（build-index） |
 | 胡宏伟 | 查询（search）与命令行（cli） |
 | 刘恒弋 | benchmark 与实验报告 |
