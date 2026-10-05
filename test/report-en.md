@@ -340,3 +340,12 @@ work due to memory and storage bottlenecks, and one must introduce posting compr
 external-memory indexing, segmented merging, sharding, etc. (or switch to an industrial search
 engine). **The inverted-index algorithm and data structure themselves remain valid — what must change
 is the storage and memory management.**
+
+## 4.5 Known limitations
+
+The current HTML extraction logic does not fully remove interface text inside tags (such as navigation
+links and button labels on the mirror pages), so a small amount of such text enters the corpus. This is
+a data-cleaning deficiency at the preprocessing stage; it does not affect the correctness of the
+inverted-index structure or the query logic, nor the validity of the performance results in this report
+(all figures are taken from the actually generated data files and are internally consistent). A complete
+fix would require improving the extraction logic and regenerating the stop-word list.
