@@ -51,3 +51,13 @@
 
 要在项目的根目录运行
 - python -m src.cli.cli
+
+## 环境说明（换一台电脑怎么跑通）
+
+- 依赖只有一个：`pip install -r requirements.txt`（PyStemmer 3.1.0）。若 pip 安装失败，多半是当前
+  Python 版本还没有 PyStemmer 的预编译 wheel 且机器上没有 C 编译器；换一个稍旧的 Python（3.9–3.13）
+  或用 conda 装（`conda install -c conda-forge pystemmer`）即可。
+- 代码用 `from src...` 绝对导入，运行与测试都要在**项目根目录**执行（`python -m src.cli.cli`），
+  不要在子目录里直接跑 search/cli。
+- 本仓库 `.venv/` 已 gitignore：Windows 的 venv 里全是绝对路径、项目一移动就失效，直接用系统/conda
+  的 Python 装依赖即可，不必建 venv。

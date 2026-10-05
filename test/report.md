@@ -30,7 +30,7 @@
    并把它们从后续索引里剔除；
 2. **倒排索引构建**：对每篇文档做分词 + 词干化（stemming），记录每个词干出现在哪些文档里
    （以及词频、位置），生成倒排索引；
-3. **查询**：接受用户输入的一个词（或短语），返回包含它的文档 ID；
+3. **查询**：接受用户输入的一个或多个关键词，返回包含它们的文档 ID；
 4. **测试**：验证倒排索引的正确性，并展示 threshold（命中词数门槛）如何影响查询结果。
 
 ## 1.2 为什么这样做（Why）
@@ -121,23 +121,23 @@ for each doc_id, (length, freq_map) in inner_docs:
 
 ## 2.4 查询（Query Processor）
 
-查询词先走和构建侧完全相同的预处理（小写 + 词干化 + 去停用词），再取 posting list 计命中数。
+查询词先走和构建侧完全相同的预处理（分词 + 小写 + 词干化 + 去停用词），再取 posting list 计命中数；
+输入是原始字符串，内部先做分词。
 
 ```
-ipt = 用户输入，按空格分词
-q = lowercase(ipt)
-q = stemmer.stemWords(q)       // 词干化
-q = 去掉 q 中的停用词
-q = 去重(q)
+ipt = 用户输入的原始字符串
+q = normalize(ipt)              // 与构建侧相同的分词：取连续字母段并小写（连字符/撇号按同规则保留）
+q = stemmer.stemWords(q)        // 词干化
+q = 去掉 q 中的停用词            // 结果为去重后的词干集合
 n = len(q)
-need = ceil(n * threshold)     // 至少命中几个词
+need = ceil(n * threshold)      // 至少命中几个词
 hit = {}
 for each w in q:
     if w not in index: continue
     for each doc_id in index[w]["docId"]:
         hit[doc_id] += 1
 result = { doc_id : hit[doc_id] >= need }
-把 result 里的 doc_id 经 mapping.json 转回文档路径返回
+把 result 里的 doc_id 经 mapping.json 转回 [doc_id, 文档路径] 列表返回
 ```
 
 threshold 是可配置项：threshold=1.0 表示所有关键词都要命中；越小，允许漏掉的词越多，结果越宽松。

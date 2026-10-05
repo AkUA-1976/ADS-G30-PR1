@@ -30,8 +30,8 @@ It consists of four steps:
    document and carry no discriminating power — and remove them from the index;
 2. **Inverted index construction**: tokenize and stem each document, record which documents each stem
    appears in (along with term frequency and positions), and build the inverted index;
-3. **Query**: accept a word (or phrase) entered by the user and return the IDs of the documents
-   containing it;
+3. **Query**: accept one or more keywords entered by the user and return the IDs of the documents
+   containing them;
 4. **Testing**: verify the correctness of the inverted index and demonstrate how the threshold
    (the required number of matched query words) affects the results.
 
@@ -134,15 +134,15 @@ sum of all its frequencies.
 
 ## 2.4 Query (Query Processor)
 
-Query words go through exactly the same preprocessing as the build side (lowercase + stemming +
-stop-word removal), then their posting lists are fetched and hits are counted.
+Query words go through exactly the same preprocessing as the build side (tokenization + lowercase +
+stemming + stop-word removal), then their posting lists are fetched and hits are counted. The input
+is a raw string, tokenized internally first.
 
 ```
-ipt = user input, split by whitespace
-q = lowercase(ipt)
+ipt = the raw input string from the user
+q = normalize(ipt)             // same tokenization as the build side: consecutive letter segments, lowercased (hyphen/apostrophe kept under the same rule)
 q = stemmer.stemWords(q)       // stemming
-q = remove stop words from q
-q = deduplicate(q)
+q = remove stop words from q   // result is a deduplicated set of stems
 n = len(q)
 need = ceil(n * threshold)     // at least how many words must match
 hit = {}
@@ -151,7 +151,7 @@ for each w in q:
     for each doc_id in index[w]["docId"]:
         hit[doc_id] += 1
 result = { doc_id : hit[doc_id] >= need }
-map the doc_ids in result back to document paths via mapping.json and return
+map the doc_ids in result back to a [doc_id, document path] list via mapping.json and return
 ```
 
 Threshold is configurable: threshold=1.0 means every keyword must match; the smaller it is, the more

@@ -1,37 +1,25 @@
 # 交叉验证 search 模块是否和 ground truth 一致。
 # 思路：用线性扫描(reference)算出标准答案(docId 集合)，
-#       再用 search 模块跑一遍(返回 docname 列表)，
-#       把 docname 反查回 docId 后对照。
-# 用法：cd test 然后 python verify_teammate_search.py
+#       再用 src.search 的 search 模块跑一遍(返回 [docId, docname] 列表)，
+#       取其中 docId 对照。
+# 用法：在项目根目录下  python test/verify_teammate_search.py
+#       （search 模块用 from src... 绝对导入，需要项目根目录在 sys.path 上）
 
 import sys
 from pathlib import Path
 
-# 让脚本能 import 到 test 目录下的 common/reference，
-# 以及 src/search 目录下的 search 模块
+# 把项目根目录加进 sys.path，让 `src` 包可以被 import
 root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(root))       # 项目根目录
 sys.path.insert(0, str(root / "test"))
-sys.path.insert(0, str(root / "src" / "search"))
 
-import json
-from common import get_inner_docs, get_stopwords, process_query, read_json
+from common import get_inner_docs, process_query
 from reference import search_linear
-from search import search as teammate_search
-
-
-def load_mapping():
-    return read_json("mapping.json")
+from src.search.search import search as teammate_search
 
 
 def main():
     docs = get_inner_docs()
-    stop = get_stopwords()
-    mapping = load_mapping()
-
-    # docname -> docId 的反查表
-    name_to_id = {}
-    for doc_id, docname in mapping.items():
-        name_to_id[docname] = int(doc_id)
 
     # (查询词列表, threshold, 说明)
     cases = [
@@ -61,12 +49,9 @@ def main():
         q = process_query(words)
         expected = search_linear(q, docs, threshold)
 
-        # search 模块答案：返回 docname 列表，反查成 docId 集合
-        got_names = teammate_search(words, {"threshold": threshold})
-        got = set()
-        for name in got_names:
-            if name in name_to_id:
-                got.add(name_to_id[name])
+        # search 模块答案：传原始字符串进去，返回 [[docId, docname], ...]
+        got_pairs = teammate_search(" ".join(words), {"threshold": threshold})
+        got = set(doc_id for doc_id, _ in got_pairs)
 
         ok = (expected == got)
         if not ok:
